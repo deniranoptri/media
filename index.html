@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhVXn-OWyBKYV7NoEHJi-h8JjxbiYpI_gf8eU7U_ctifzZcJT4FxInd-HzGPPuG1RImRdqdnjo1hQdtpgRIFPmpimVTIfzQ3ql1G1cFtGtliJZVvWttxQLKj5ZLIimf2C6fgsKfdIr99kcN45tCQ7n-6VlDrZc_zEnj_AyPNYI4USF77jUscHHgrGcK65o/s320/head.png.png" />
+    <!-- PATH RELATIF: Hapus tanda '/' di depan agar aman di hosting subfolder -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#eff6ff">
+    <title>BUNGAS - Robot Pintar</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+      :root { --app-height: 100dvh; }
+      html, body { 
+        height: 100%; 
+        width: 100%;
+        margin: 0; 
+        padding: 0; 
+        overflow: hidden; 
+        background-color: #f0f4f8; 
+        touch-action: manipulation; 
+        -webkit-user-select: none; 
+        user-select: none; 
+        /* PREVENT BOUNCE SCROLL ON MOBILE */
+        overscroll-behavior: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body { font-family: 'Quicksand', sans-serif; height: var(--app-height); width: 100%; }
+      
+      /* BACKGROUND ANIMATION (Aurora) */
+      @keyframes gradientBG { 
+        0% { background-position: 0% 50%; } 
+        50% { background-position: 100% 50%; } 
+        100% { background-position: 0% 50%; } 
+      }
+      .bg-aurora {
+        background: linear-gradient(-45deg, #eff6ff, #e0e7ff, #f0f9ff, #eef2ff);
+        background-size: 400% 400%;
+        animation: gradientBG 15s ease infinite;
+      }
+
+      /* ROBOT ANIMATIONS */
+      @keyframes breath { 0%, 100% { transform: translateY(0) scaleY(1); } 50% { transform: translateY(-2px) scaleY(1.005); } }
+      @keyframes headTalkNatural { 0% { transform: rotate(0deg); } 25% { transform: rotate(-3deg) translateY(1px); } 50% { transform: rotate(0deg) translateY(-1px); } 75% { transform: rotate(3deg) translateY(1px); } 100% { transform: rotate(0deg); } }
+      @keyframes jawMove { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } } 
+      @keyframes bodyTalkSway { 0%, 100% { transform: rotate(0deg); } 33% { transform: rotate(1deg); } 66% { transform: rotate(-1deg); } }
+      @keyframes armRightExplain { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(10deg); } }
+      @keyframes armLeftExplain { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-10deg); } }
+      @keyframes thinkPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+      
+      /* UI ANIMATIONS */
+      @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes pingSlow { 75%, 100% { transform: scale(1.5); opacity: 0; } }
+
+      .anim-idle { animation: breath 3s infinite ease-in-out; }
+      .anim-talk-head { animation: headTalkNatural 3s infinite cubic-bezier(0.45, 0, 0.55, 1); }
+      .anim-jaw { animation: jawMove 0.3s infinite ease-in-out; } 
+      .anim-talk-body { animation: bodyTalkSway 3s infinite ease-in-out; }
+      .anim-talk-arm-right { animation: armRightExplain 3s infinite ease-in-out; }
+      .anim-talk-arm-left { animation: armLeftExplain 4s infinite ease-in-out; }
+      .anim-think { animation: thinkPulse 1.2s infinite ease-in-out; }
+      
+      .animate-slideUp { animation: slideUp 0.3s ease-out forwards; }
+      .animate-fadeIn { animation: fadeIn 0.2s ease-out forwards; }
+      .animate-ping-slow { animation: pingSlow 2s cubic-bezier(0, 0, 0.2, 1) infinite; }
+
+      .robot-part { position: absolute; will-change: transform; transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+      .hide-scrollbar::-webkit-scrollbar { display: none; }
+      .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      .selectable-text { -webkit-user-select: text; user-select: text; }
+
+      /* GLASSMORPHISM UTILS */
+      .glass-panel {
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+      }
+      .glass-input {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+      }
+      
+      /* Masking for Text Fade */
+      .mask-linear-fade {
+        mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+      }
+    </style>
+
+    <!-- FIXED IMPORT MAP: REACT 18 ONLY -->
+    <!-- Mencegah konflik antara React 18 dan 19 yang menyebabkan layar blank -->
+    <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://esm.sh/@google/genai",
+    "react": "https://esm.sh/react@18.2.0",
+    "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "react-dom": "https://esm.sh/react-dom@18.2.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/"
+  }
+}
+</script>
+    
+    <!-- Error Handler & API KEY PLACEHOLDER -->
+    <script>
+      // =========================================================================================
+      // ⚠️⚠️⚠️ KHUSUS UNTUK HOSTING (NETLIFY/VERCEL/GITHUB PAGES) ⚠️⚠️⚠️
+      // Agar API Key tidak 'mati' saat di-upload, tempel API Key Anda di antara tanda kutip di bawah:
+      window.GEMINI_API_KEY = ""; 
+      // Contoh: window.GEMINI_API_KEY = "AIzaSyD-contoh-key-anda-disini";
+      // Pastikan API Key ini TIDAK dibatasi referrer jika Anda mengalami Error 400/403
+      // =========================================================================================
+
+      // Fallback untuk window.process (agar kompatibel)
+      if (!window.process) {
+          window.process = { env: { API_KEY: window.GEMINI_API_KEY || "" } }; 
+      } else if (!window.process.env) {
+          window.process.env = { API_KEY: window.GEMINI_API_KEY || "" };
+      }
+      
+      window.onerror = function(msg, url, line, col, error) {
+        if(msg.includes('ResizeObserver')) return;
+        console.error("Global Error:", msg, error);
+      };
+    </script>
+  <link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-aurora">
+    <div id="root" class="flex h-full w-full items-center justify-center">
+      <div class="text-center glass-panel p-8 rounded-2xl">
+        <div className="relative">
+             <div class="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+             <div class="absolute inset-0 flex items-center justify-center font-bold text-blue-500">B</div>
+        </div>
+        <p class="text-blue-600 font-bold animate-pulse tracking-wider text-sm">MEMBUKA SISTEM...</p>
+      </div>
+    </div>
+    
+    <!-- PATH RELATIF: Gunakan ./ agar script terbaca di hosting -->
+    <script type="module" src="./index.tsx"></script>
+    
+    <script>
+      const appHeight = () => document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+      window.addEventListener('resize', appHeight);
+      appHeight();
+    </script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

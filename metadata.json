@@ -1,0 +1,8 @@
+{
+  "name": "BUNGAS - Bot Unggulan Asisten Semua",
+  "description": "Robot asisten pendidikan cerdas berbasis kearifan lokal Kalimantan Selatan.",
+  "requestFramePermissions": [
+    "microphone",
+    "camera"
+  ]
+}

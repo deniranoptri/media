@@ -1,0 +1,21 @@
+{
+  "name": "BUNGAS - Robot Pintar",
+  "short_name": "Bungas Bot",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#eff6ff",
+  "theme_color": "#eff6ff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhVXn-OWyBKYV7NoEHJi-h8JjxbiYpI_gf8eU7U_ctifzZcJT4FxInd-HzGPPuG1RImRdqdnjo1hQdtpgRIFPmpimVTIfzQ3ql1G1cFtGtliJZVvWttxQLKj5ZLIimf2C6fgsKfdIr99kcN45tCQ7n-6VlDrZc_zEnj_AyPNYI4USF77jUscHHgrGcK65o/s320/head.png.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhVXn-OWyBKYV7NoEHJi-h8JjxbiYpI_gf8eU7U_ctifzZcJT4FxInd-HzGPPuG1RImRdqdnjo1hQdtpgRIFPmpimVTIfzQ3ql1G1cFtGtliJZVvWttxQLKj5ZLIimf2C6fgsKfdIr99kcN45tCQ7n-6VlDrZc_zEnj_AyPNYI4USF77jUscHHgrGcK65o/s320/head.png.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
